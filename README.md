@@ -1,1 +1,3 @@
-# microservice_-storehouse_shop
+# Microservice:
+# STORAGE on Django REST framework
+# SHOP on Django

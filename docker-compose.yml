@@ -1,0 +1,93 @@
+version: "3.10"
+
+services:
+  shop:
+    container_name: shop
+    build:
+      context: .
+      dockerfile: ./docker/shop/Dockerfile
+    volumes:
+      - ./shop:/app
+    networks:
+      - shop_db_network
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db_shop
+    environment:
+      DB_NAME: "shop"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "db_shop"
+      DB_PORT: "5432"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8000/admin/login/"]
+      interval: 1m
+      timeout: 5s
+      retries: 2
+
+  storehouse:
+    container_name:   storehouse
+    build:
+      context: .
+      dockerfile: ./docker/storehouse/Dockerfile
+    volumes:
+      - ./storehouse:/app
+    networks:
+      - storehouse_db_network
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db_storehouse
+    environment:
+      DB_NAME: "storehouse"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "db_storehouse"
+      DB_PORT: "5432"
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8000/admin/login/"]
+      interval: 1m
+      timeout: 5s
+      retries: 2
+
+  db_shop:
+    container_name: db_shop
+    image: postgres:14-alpine
+    volumes:
+      - db_shop_volume:/var/lib/postgresql/data
+    networks:
+      - shop_db_network
+    expose:
+      - 5432
+    restart: on-failure
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'shop'
+
+  db_storehouse:
+    container_name: db_storehouse
+    image: postgres:14-alpine
+    volumes:
+      - db_storehouse_volume:/var/lib/postgresql/data
+    networks:
+      - storehouse_db_network
+    expose:
+      - 5432
+    restart: on-failure
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'storehouse'
+
+
+networks:
+  shop_db_network:
+  storehouse_db_network:
+
+volumes:
+  db_shop_volume:
+  db_storehouse_volume:
