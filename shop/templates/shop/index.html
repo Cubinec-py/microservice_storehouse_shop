@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+
+{% block content %}
+    <style>
+   body {
+    background-image: url({% static 'images/photo-1514810771018-276192729582.jpeg' %}); /* Адрес картинки */
+    background-size: 103%;
+   }
+   .i-am-centered {
+    margin: auto;
+    max-width: 400px;
+    padding-top: 20%;
+   }
+  </style>
+    <body>
+    <div class="i-am-centered">
+        <h1>Welcome to blog</h1>
+    </div>
+  </body>
+{% endblock %}
