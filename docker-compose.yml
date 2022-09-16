@@ -48,7 +48,7 @@ services:
       DB_PORT: "5432"
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8000/admin/login/"]
+      test: ["CMD", "curl", "--fail", "http://0.0.0.0:8001/admin/login/"]
       interval: 1m
       timeout: 5s
       retries: 2
