@@ -1,0 +1,41 @@
+{% load static %}
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+<div class="container mt-2 mb-2">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="images p-3">
+                            <div class="text-center p-4"> <img src="{{object.imageURL}}" width="250" /> </div>
+                            <h5 class="text-uppercase">Book author:<br>
+                                <span class="text-uppercase text-muted brand">{{ object.author }}</h5></span>
+                            <h5 class="text-uppercase">Book genre:<br>
+                                {% for obj in object.genre.all %}
+                                    <span class="text-uppercase text-muted brand">{{ obj }}<br></span>
+                                {% endfor %}
+                            </h5>
+                            <h5 class="text-uppercase">Pages:
+                                <span class="text-uppercase text-muted brand">{{ object.pages }}</h5></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product p-4">
+                            <div class="mt-4 mb-3"> <span class="text-uppercase text-muted brand">Book title</span>
+                                <h5 class="text-uppercase">{{ object.title }}</h5>
+                                <div class="price d-flex flex-row align-items-center"> <span class="act-price">Price:</span>
+                                    <div class="ml-2"><span> ${{ object.price }}</span> </div>
+                                </div>
+                            </div>
+                            <p class="about">{{ object.description }}</p>
+                            <div class="cart mt-4 align-items-center">
+                                <button
+                                        data-product="{{object.id}}" data-action="add" class="btn btn-danger text-uppercase mr-2 px-4 add-btn update-cart">Add to Cart
+                                </button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

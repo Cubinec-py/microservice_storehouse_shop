@@ -18,10 +18,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from django.views.generic import TemplateView
-
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='shop/index.html'), name='home'),
+    path('', include('books.urls')),
+    path('order/', include('order.urls')),
     path('profile/', include('user_authentication.urls')),
     path('admin/', admin.site.urls),
 ]
