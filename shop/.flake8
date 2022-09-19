@@ -1,0 +1,4 @@
+[flake8]
+extend-ignore = W191
+max-line-length=120
+exclude=migrations,tests.py,.venv,.git,__pycache__,.idea

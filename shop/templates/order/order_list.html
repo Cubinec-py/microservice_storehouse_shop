@@ -1,0 +1,52 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% block content %}
+
+    <h1 class="page-header">Your orders</h1>
+    {% if user.is_anonymous %}
+        <form action="{% url 'order_info'  %}" method="post">
+            {% csrf_token %}
+            <h6><strong>Write your name and email which you wrote in shipping address to see your order.</strong></h6>
+            {{ form }}
+            <input type="submit" name="submit" value="OK">
+        </form>
+    {% endif %}
+    {% for message in messages %}
+        <div class="container-fluid p-0">
+            <div class="alert {{ message.tags }} alert-success" role="alert" >
+                {{ message }}
+            </div>
+        </div>
+    {% endfor %}
+
+  <table class="table" id="book-table">
+    <thead>
+    <tr>
+        <th>Order number</th>
+        <th>Order creation date</th>
+        <th>Amount of books </th>
+        <th>Status</th>
+        <th>Total price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% include 'order/include/order_list.html' %}
+    </tbody>
+  </table>
+
+    {% block extrascripts %}
+      <script type="text/javascript">
+          $(function () {
+
+              // Detail view order
+            function ViewOrderModalForm() {
+                $(".view-order").each(function () {
+                    $(this).modalForm({formURL: $(this).data("forma-url")});
+                });
+              }
+              ViewOrderModalForm();
+          });
+      </script>
+    {% endblock extrascripts %}
+{% endblock %}

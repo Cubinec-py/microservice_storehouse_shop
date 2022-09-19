@@ -1,0 +1,60 @@
+{% load static %}
+{% block content %}
+    {% if user.is_authenticated %}
+        {% for order in order_list %}
+            {% if order.get_cart_items > 0  %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.date_ordered|date:"M d, Y G:i" }}</td>
+                <td>{{ order.get_cart_items }}</td>
+                <td>
+                    {% if order.complete is True %}
+                        Order processed, please wait for confirmation
+                    {% else %}
+                        Your order in bag now
+                    {% endif %}
+                </td>
+                <td>${{ order.get_cart_total|floatformat:2 }}</td>
+                <td>
+                    <button type="button" class="view-order btn btn-success" data-forma-url="{% url 'order_detail' order.pk %}">
+                        <span class="fa fa-trash"></span>
+                        Order detail
+                    </button>
+                </td>
+            </tr>
+            {% endif %}
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center bg-warning">No orders</td>
+          </tr>
+        {% endfor %}
+    {% else %}
+        {% for order in order_list %}
+            {% if order.get_cart_items > 0  %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.get_cart_items }}</td>
+                <td>{{ order.date_ordered|date:"M d, Y G:i" }}</td>
+                <td>
+                    {% if order.complete is True %}
+                        Order processed, please wait for confirmation
+                    {% else %}
+                        Your order in bag now
+                    {% endif %}
+                </td>
+                <td>${{ order.get_cart_total|floatformat:2 }}</td>
+                <td>
+                    <button type="button" class="view-order btn btn-success" data-forma-url="{% url 'order_detail' pk=order.pk %}">
+                        <span class="fa fa-trash"></span>
+                        Order detail
+                    </button>
+                </td>
+            </tr>
+            {% endif %}
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center bg-warning">No orders</td>
+          </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
