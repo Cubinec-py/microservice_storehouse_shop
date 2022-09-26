@@ -1,0 +1,144 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/search.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/range_filter.css' %}">
+
+<div class="container" style="left: auto !important; margin-left: 80px !important; margin-top: 50px !important; margin-bottom: 20px !important;">
+    <h3 style="margin-left: 850px !important; padding-bottom: 10px !important;">You can search for book here!</h3>
+        <form method="GET" action="">
+            <div class="container h-100">
+              <div class="d-flex justify-content-center h-100">
+                  <a class="btn btn-outline-dark" style="margin-left: 720px !important; padding-bottom: 6px !important; width: 76px !important; height: 39px !important; margin-top: 10px !important; margin-right: 0px !important;" href="{% url 'store' %}">
+                      <span class="glyphicon glyphicon-plus"></span>
+                      Reset
+                  </a>
+                <div class="searchbar" style="margin-left: 20px !important;">
+                    <input class="search_input" type="text" id="id_title__icontains" name="title__icontains" placeholder="Search" value="{{ filter.form.data.title__icontains }}">
+
+                        <button class="search_icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </a>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-2" style="margin-left: 0px !important; margin-right: 0px !important; padding-right: 0px !important; padding-left: 0px !important; width: 300px !important;">
+                <section class="sticky-top" style="top: 130px;">
+                <div style="margin-right: 50px !important;">
+                    {% include 'shop/include/filter.html' %}
+                </div>
+                </section>
+            </div>
+            <div class="col">
+                <div class="row">
+                {% if filter.form.data|length == 0 or filter.form.data.page %}
+                    {% if object_list|length > 0  %}
+                        {% for product in object_list %}
+                            <div class="col-lg-3" style="width: 330px !important; height: 410px !important; padding-bottom: 20px !important; padding-top: 20px !important; border-top-style: solid !important; border-top-width: 0px !important; border-bottom-style: solid !important; border-bottom-width: 0px !important; margin-bottom: 20px !important;">
+                                <img class="justify-content-center" src="{{product.imageURL}}" style="width: 320px !important;" width="306" height="300">
+                                <div class="box-element product" style="width: 320px !important;">
+                                    <h6><strong>{{product.title}}</strong></h6>
+                                    <hr>
+                                    {% if product.status_book is True %}
+                                        <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                                    {% else %}
+                                        <button class="btn btn-outline-danger add-btn update-cart">Out off stock</button>
+                                    {% endif %}
+                                    <button type="button" class="view-book btn btn-outline-success" data-forma-url="{% url 'book_detail' product.pk %}">
+                                      <span class="fa fa-trash"></span>
+                                        View
+                                    </button>
+                                    <h4 style="display: inline-block; float: right"><strong style="">${{product.price}}</strong></h4>
+                                    <h3></h3>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else  %}
+                        <div class="p-lg-5 text-center bg-light" style="margin-top: 100px !important;">
+                            <h1>Sorry, but we don't have some books now.</h1>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% for product in filter.qs %}
+                        <div class="col-lg-3" style="width: 330px !important; height: 410px !important; padding-bottom: 20px !important; padding-top: 20px !important; border-top-style: solid !important; border-top-width: 0px !important; border-bottom-style: solid !important; border-bottom-width: 0px !important; margin-bottom: 20px !important;">
+                            <img class="justify-content-center" src="{{product.imageURL}}" width="306" height="300">
+                            <div class="box-element product" >
+                                <h6><strong>{{product.title}}</strong></h6>
+                                <hr>
+
+                                <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                                <button type="button" class="view-book btn btn-outline-success" data-forma-url="{% url 'book_detail' product.pk %}">
+                                  <span class="fa fa-trash"></span>
+                                    View
+                                </button>
+                                <h4 style="display: inline-block; float: right"><strong>${{product.price}}</strong></h4>
+                                <h3></h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if filter.qs|length == 0  %}
+                        <div class="p-lg-5 text-center bg-light" style="margin-top: 100px !important;">
+                            <h1>Sorry, but we don't have books with such filter options.</h1>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item"><a class="page-link" href="#">{{ i }} </a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+
+    {% block extrascripts %}
+      <script type="text/javascript">
+          $(function () {
+                // View book button
+            function ViewBookModalForm() {
+                $(".view-book").each(function () {
+                    $(this).modalForm({formURL: $(this).data("forma-url")});
+                });
+              }
+              ViewBookModalForm();
+          });
+      </script>
+    {% endblock extrascripts %}
+
+{% endblock content %}

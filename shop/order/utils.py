@@ -3,7 +3,7 @@ from order.models import Order, OrderItem, Customer
 from books.models import Book
 
 
-def cookieCart(request):
+def cookie_cart(request):
 
 	# Create empty cart for now for non-logged in user
 	try:
@@ -47,25 +47,25 @@ def cookieCart(request):
 	return {'order': order, 'items': items}
 
 
-def cartData(request):
+def cart_data(request):
 	if request.user.is_authenticated:
 		customer = request.user
 		order, created = Order.objects.get_or_create(customer=customer, complete=False)
 		items = order.orderitem_set.all()
 	else:
-		cookieData = cookieCart(request)
-		order = cookieData['order']
-		items = cookieData['items']
+		cookie_data = cookie_cart(request)
+		order = cookie_data['order']
+		items = cookie_data['items']
 
 	return {'order': order, 'items': items}
 
 
-def guestOrder(request, data):
+def guest_order(request, data):
 	name = data['form']['name']
 	email = data['form']['email']
 
-	cookieData = cookieCart(request)
-	items = cookieData['items']
+	cookie_data = cookie_cart(request)
+	items = cookie_data['items']
 
 	customer, created = Customer.objects.get_or_create(
 			email=email,
@@ -80,7 +80,7 @@ def guestOrder(request, data):
 
 	for item in items:
 		product = Book.objects.get(id=item['id'])
-		orderItem = OrderItem.objects.create(
+		order_item = OrderItem.objects.create(
 			book=product,
 			order=order,
 			quantity=(item['quantity'] if item['quantity'] > 0 else -1 * item['quantity']),

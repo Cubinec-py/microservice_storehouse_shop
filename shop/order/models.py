@@ -16,7 +16,8 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     guest = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
-    complete = models.BooleanField(default=False)
+    complete = models.BooleanField(default=False, help_text='Status of confirming order in cart')
+    status = models.CharField(max_length=100, help_text='Status of order from storehouse', null=True)
     transaction_id = models.CharField(max_length=100, null=True)
 
     def __str__(self):
@@ -28,22 +29,22 @@ class Order(models.Model):
     @property
     def shipping(self):
         shipping = False
-        orderitems = self.orderitem_set.all()
-        for i in orderitems:
+        order_items = self.orderitem_set.all()
+        for i in order_items:
             if i.book.digital is False:
                 shipping = True
         return shipping
 
     @property
     def get_cart_total(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.get_total for item in orderitems])
+        order_items = self.orderitem_set.all()
+        total = sum([item.get_total for item in order_items])
         return total
 
     @property
     def get_cart_items(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.quantity for item in orderitems])
+        order_items = self.orderitem_set.all()
+        total = sum([item.quantity for item in order_items])
         return total
 
 

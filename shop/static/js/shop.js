@@ -51,7 +51,7 @@ $(function () {
           window.location='/'
         }
         else {
-          // alert("Wrong password or username.");
+          alert("Wrong password or username.");
           $("#modal-book .modal-content").html(data.html_form);
         }
       }

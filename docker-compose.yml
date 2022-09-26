@@ -1,7 +1,7 @@
 version: "3.10"
 
 services:
-  shop:
+  shop: &shop
     container_name: shop
     build:
       context: .
@@ -9,7 +9,7 @@ services:
     volumes:
       - ./shop:/app
     networks:
-      - shop_db_network
+      - shop_network
     ports:
       - "8000:8000"
     depends_on:
@@ -28,14 +28,14 @@ services:
       retries: 2
 
   storehouse:
-    container_name:   storehouse
+    container_name: storehouse
     build:
       context: .
       dockerfile: ./docker/storehouse/Dockerfile
     volumes:
       - ./storehouse:/app
     networks:
-      - storehouse_db_network
+      - storehouse_network
     ports:
       - "8001:8000"
     depends_on:
@@ -57,9 +57,10 @@ services:
     container_name: db_shop
     image: postgres:14-alpine
     volumes:
-      - db_shop_volume:/var/lib/postgresql/data
+      - db_shop:/var/lib/postgresql/data
     networks:
-      - shop_db_network
+      - shop_network
+      - db_shop
     expose:
       - 5432
     restart: on-failure
@@ -72,9 +73,10 @@ services:
     container_name: db_storehouse
     image: postgres:14-alpine
     volumes:
-      - db_storehouse_volume:/var/lib/postgresql/data
+      - db_storehouse:/var/lib/postgresql/data
     networks:
-      - storehouse_db_network
+      - storehouse_network
+      - db_storehouse
     expose:
       - 5432
     restart: on-failure
@@ -83,11 +85,86 @@ services:
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_DB: 'storehouse'
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    networks:
+      - shop_network
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    expose:
+      - 4369
+      - 5671
+      - 5672
+      - 15672
+      - 25672
+    ports:
+      - "5672:5672"
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 5s
+      timeout: 15s
+      retries: 1
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: on-failure
+    networks:
+      - shop_network
+    expose:
+      - 6379
+    volumes:
+      - redis:/var/lib/redis/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "ping"]
+
+  celery:
+    <<: *shop
+    container_name: celery
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+      - redis
+    expose: []
+    ports:
+      - "5555:5555"
+    networks:
+      - shop_network
+      - storehouse_network
+    environment:
+      C_FORCE_ROOT: 'true'
+      CHECK_WEB: 'true'
+    healthcheck:
+      test: ["CMD-SHELL", "ps ax", "|" ,"grep -v grep", "|" ,"grep celery",  "||", "exit 1"]
+      interval: 1m
+      timeout: 5s
+      retries: 2
+    command: celery -A core worker -B -l INFO
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - db_shop
+      - db_storehouse
+    restart: unless-stopped
+
 
 networks:
-  shop_db_network:
-  storehouse_db_network:
+  shop_network:
+  storehouse_network:
+  db_storehouse:
+  db_shop:
 
 volumes:
-  db_shop_volume:
-  db_storehouse_volume:
+  db_shop:
+  db_storehouse:
+  rabbitmq_data:
+  redis:

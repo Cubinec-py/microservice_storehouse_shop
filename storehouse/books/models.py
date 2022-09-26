@@ -1,6 +1,14 @@
+from django.utils import timezone
+
 from django.db import models
 from django.urls import reverse
 import uuid
+
+
+BOOK_ITEM_STATUS = (
+    ('Available', 'Available'),
+    ('Unavailable', 'Unavailable'),
+)
 
 
 class Genre(models.Model):
@@ -20,7 +28,7 @@ class Book(models.Model):
     """
     Model representing a book (but not a specific copy of a book).
     """
-    custom_id = models.UUIDField(
+    id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         help_text="Unique ID for book"
@@ -35,6 +43,7 @@ class Book(models.Model):
     # Genre class has already been defined so we can specify the object above.
     price = models.DecimalField(max_digits=7, decimal_places=2)
     pages = models.IntegerField()
+    created = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
         """
@@ -57,17 +66,20 @@ class BookItem(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         help_text="Unique ID for this particular book across whole library")
-    book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
-    count = models.IntegerField(default=0)
-
-    class Meta:
-        ordering = ["count"]
+    book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
+    imprint = models.CharField(max_length=200, help_text='Whrite place where book was placed', null=True)
+    status = models.CharField(
+        choices=BOOK_ITEM_STATUS,
+        max_length=100,
+        help_text='Status of book in storehouse',
+        default='Available'
+    )
 
     def __str__(self):
         """
         String for representing the Model object
         """
-        return '%s (%s)' % (self.id, self.book.title)
+        return self.book.title
 
 
 class Author(models.Model):
@@ -76,8 +88,6 @@ class Author(models.Model):
     """
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    date_of_birth = models.DateField(null=True, blank=True)
-    date_of_death = models.DateField('Died', null=True, blank=True)
 
     def get_absolute_url(self):
         """

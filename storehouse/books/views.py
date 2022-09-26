@@ -1,5 +1,7 @@
 from rest_framework import viewsets, permissions
 
+from django.contrib.auth.models import User
+
 from books.models import BookItem, Book, Author, Genre
 from books.serializers import BookSerializer, BookItemSerializer, AuthorSerializer, GenreSerializer
 # from books.permissions import IsOwnerOrReadOnlyBook
