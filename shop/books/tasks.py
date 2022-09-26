@@ -8,7 +8,7 @@ from books.models import Book, Genre, Author
 @shared_task
 def check_for_books():
     print('Starting for updating books')
-    url = 'http://127.0.0.1:8000/api/book/'
+    url = 'http://127.0.0.1:8001/api/book/'
     page = ''
 
     while True:
@@ -53,7 +53,7 @@ def check_for_books():
 @shared_task
 def update_count_books():
     print('Updating for count of books')
-    url = 'http://127.0.0.1:8000/api/book/'
+    url = 'http://127.0.0.1:8001/api/book/'
     page = ''
 
     while True:
