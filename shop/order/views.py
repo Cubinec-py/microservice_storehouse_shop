@@ -5,13 +5,14 @@ from django.shortcuts import get_object_or_404
 import json
 import datetime
 
-from order.utils import cartData, guestOrder
+from order.utils import cart_data, guest_order
 from order.forms import OrderForm
 from order.models import Book, Order, OrderItem, ShippingAddress, Customer
+from order.tasks import order_to_storehouse
 
 
 def cart(request):
-	data = cartData(request)
+	data = cart_data(request)
 
 	order = data['order']
 	items = data['items']
@@ -21,7 +22,7 @@ def cart(request):
 
 
 def checkout(request):
-	data = cartData(request)
+	data = cart_data(request)
 	order = data['order']
 	items = data['items']
 
@@ -29,33 +30,33 @@ def checkout(request):
 	return render(request, 'order/checkout.html', context)
 
 
-def updateItem(request):
+def update_item(request):
 	data = json.loads(request.body)
-	productId = data['productId']
+	product_id = data['productId']
 	action = data['action']
 
 	customer = request.user
-	product = Book.objects.get(id=productId)
+	product = Book.objects.get(id=product_id)
 	order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
-	orderItem, created = OrderItem.objects.get_or_create(order=order, book=product)
+	order_item, created = OrderItem.objects.get_or_create(order=order, book=product)
 
 	if action == 'add':
-		orderItem.quantity = (orderItem.quantity + 1)
+		order_item.quantity = (order_item.quantity + 1)
 	elif action == 'remove':
-		orderItem.quantity = (orderItem.quantity - 1)
+		order_item.quantity = (order_item.quantity - 1)
 	elif action == 'delete':
-		orderItem.quantity = 0
+		order_item.quantity = 0
 
-	orderItem.save()
+	order_item.save()
 
-	if orderItem.quantity <= 0:
-		orderItem.delete()
+	if order_item.quantity <= 0:
+		order_item.delete()
 
 	return JsonResponse('Item was added', safe=False)
 
 
-def processOrder(request):
+def process_order(request):
 	transaction_id = datetime.datetime.now().timestamp()
 	data = json.loads(request.body)
 
@@ -63,7 +64,7 @@ def processOrder(request):
 		customer = request.user
 		order, created = Order.objects.get_or_create(customer=customer, complete=False)
 	else:
-		customer, order = guestOrder(request, data)
+		customer, order = guest_order(request, data)
 
 	total = float(data['form']['total'])
 	order.transaction_id = transaction_id
@@ -82,6 +83,7 @@ def processOrder(request):
 				state=data['shipping']['state'],
 				zipcode=data['shipping']['zipcode'],
 			)
+			# order_to_storehouse(customer, transaction_id)
 		else:
 			ShippingAddress.objects.create(
 				guest=customer,
@@ -91,6 +93,7 @@ def processOrder(request):
 				state=data['shipping']['state'],
 				zipcode=data['shipping']['zipcode'],
 			)
+			# order_to_storehouse(customer, transaction_id)
 
 	return JsonResponse('', safe=False)
 

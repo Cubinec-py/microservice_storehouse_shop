@@ -14,6 +14,7 @@ class GenreAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'price')
     list_filter = ['title', 'author', 'price', 'genre']
+    search_fields = ['title']
 
 
 @admin.register(Author)

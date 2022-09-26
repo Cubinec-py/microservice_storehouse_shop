@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django_extensions',
     'bootstrap_modal_forms',
-    "debug_toolbar",
+    'debug_toolbar',
+    'django_celery_results',
+    'django_filters',
 
     'user_authentication',
     'order',
@@ -127,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -151,3 +153,15 @@ LOGOUT_REDIRECT_URL = '/'
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_TIMEZONE = "Europe/Kiev"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+REDIS_URL = 'redis://redis:6379/0'
+REDIS_CACHE = "redis:6379"
+AMQP_URL = "amqp://rabbitmq:5672"
+
+BROKER_URL = REDIS_URL
+CELERY_result_backend = REDIS_URL
+CELERY_BROKER_URL = BROKER_URL

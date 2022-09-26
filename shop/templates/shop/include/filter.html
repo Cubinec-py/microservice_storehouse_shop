@@ -1,0 +1,75 @@
+{% load static %}
+
+<h3 class="mb-4 border-bottom pb-1">Filters</h3>
+
+{#        <div class="list-group list-group-flush">#}
+{#            {% if filter.form.data.genre|length == 0 %}#}
+{#                {% for filter in filter.form.fields.genre.queryset.all %}#}
+{#                    <li class="list-group-item">#}
+{#                        <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
+{#                        {{ filter }} no filter#}
+{#                    </li>#}
+{#                {% endfor %}#}
+{#            {% else %}#}
+{#                {% for key, value in filter.form.data.lists %}#}
+{#                    {% if key == 'genre' %}#}
+{#                        {% for filter in filter.form.fields.genre.queryset.all %}#}
+{#                            {% if filter.id == value %}#}
+{#                                <li class="list-group-item">#}
+{#                                    <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
+{#                                    {{ filter }} sf#}
+{#                                </li>#}
+{#                            {% else %}#}
+{#                                <li class="list-group-item">#}
+{#                                    <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
+{#                                    {{ filter }}#}
+{#                                </li>#}
+{#                            {% endif %}#}
+{#                        {% endfor %}#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
+{#            {% endif %}#}
+{#        </div>#}
+<form method="GET" action="">
+
+    <div class="card mb-4">
+        <h6 class="card-header">Price</h6>
+        <div class="list-group list-group-flush">
+            <label for="amount" style="margin-top: 10px !important; margin-bottom: 10px !important;">PriceFrom ${{ min_price.price__min }}</label>
+            <input class="form-control" style="width: 148px !important; margin-left: 50px !important;" type="text" id="id_price_0" name="price_min" value="{{ filter.form.data.price_min }}">
+
+            <label for="amount" style="margin-top: 10px !important; margin-bottom: 10px !important;">PriceTo ${{ max_price.price__max }}</label>
+            <input class="form-control" style="margin-bottom: 20px !important; width: 148px !important; margin-left: 50px !important;" type="text" id="id_price_1" name="price_max"  value="{{ filter.form.data.price_max }}">
+
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <h6 class="card-header">Genre</h6>
+        <div class="list-group list-group-flush">
+            {% for filter in filter.form.fields.genre.queryset.all %}
+                <li class="list-group-item">
+                    <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">
+                    {{ filter }}
+                </li>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <h6 class="card-header">Authors</h6>
+        <div class="list-group list-group-flush">
+            {% for filter in filter.form.fields.author.queryset.all %}
+                <li class="list-group-item">
+                    <input class="filter-checkbox" name="author" id="id_author" value="{{ filter.id }}" type="checkbox">
+                    {{ filter }}
+                </li>
+            {% endfor %}
+        </div>
+    </div>
+    <button class="btn btn-outline-dark" style="margin-bottom: 2px !important;">Filter</button>
+    <a class="btn btn-outline-dark" style="margin: 20px 10px 20px 50px !important;" href="{% url 'store' %}">
+          <span class="glyphicon glyphicon-plus"></span>
+          Reset
+    </a>
+</form>
