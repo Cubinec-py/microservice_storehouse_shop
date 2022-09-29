@@ -47,12 +47,12 @@
                             <div class="col-lg-3" style="width: 330px !important; height: 410px !important; padding-bottom: 20px !important; padding-top: 20px !important; border-top-style: solid !important; border-top-width: 0px !important; border-bottom-style: solid !important; border-bottom-width: 0px !important; margin-bottom: 50px !important;">
                                 <img class="justify-content-center" src="{% static 'images/book_image.jpeg' %}" style="width: 320px !important;" width="306" height="300">
                                 <div class="box-element product" style="width: 320px !important; height: 137px !important;">
-                                    <h6><strong>{{product.title}}</strong></h6>
+                                    <h6 style="height: 38px !important;"><strong>{{product.title}}</strong></h6>
                                     <hr>
                                     {% if product.status_book is True %}
                                         <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
                                     {% else %}
-                                        <button class="btn btn-outline-danger add-btn update-cart">Out off stock</button>
+                                        <button class="btn btn-outline-danger add-btn">Out off stock</button>
                                     {% endif %}
                                     <button type="button" class="view-book btn btn-outline-success" data-forma-url="{% url 'book_detail' product.pk %}">
                                       <span class="fa fa-trash"></span>
@@ -74,12 +74,12 @@
                         <div class="col-lg-3" style="width: 330px !important; height: 410px !important; padding-bottom: 20px !important; padding-top: 20px !important; border-top-style: solid !important; border-top-width: 0px !important; border-bottom-style: solid !important; border-bottom-width: 0px !important; margin-bottom: 50px !important;">
                             <img class="justify-content-center" src="{% static 'images/book_image.jpeg' %}" style="width: 320px !important;" width="306" height="300">
                             <div class="box-element product" style="width: 320px !important; height: 137px !important;">
-                                <h6><strong>{{product.title}}</strong></h6>
+                                <h6 style="height: 38px !important;"><strong>{{product.title}}</strong></h6>
                                 <hr>
                                 {% if product.status_book is True %}
                                     <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
                                 {% else %}
-                                    <button class="btn btn-outline-danger add-btn update-cart">Out off stock</button>
+                                    <button class="btn btn-outline-danger add-btn">Out off stock</button>
                                 {% endif %}
                                 <button type="button" class="view-book btn btn-outline-success" data-forma-url="{% url 'book_detail' product.pk %}">
                                   <span class="fa fa-trash"></span>
