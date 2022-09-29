@@ -1,0 +1,38 @@
+{% load widget_tweaks %}
+<form method="post" action="{% url 'contact_us' %}" class="js-contact-us">
+  {% csrf_token %}
+    <div class="card-body p-md-5" style="padding-bottom: 0px !important;">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1" style="width: 624px !important;">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Contactus form</p>
+                <form class="mx-1 mx-md-4">
+                    <f class="modal-body">
+                        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                          {% endfor %}
+                        </div>
+
+                        {% for field in form %}
+                          <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% render_field field class="form-control" placeholder=field.label %}
+                            <div class="{% if field.errors %} invalid{% endif %}">
+                              {% for error in field.errors %}
+                                <p class="help-block">{{ error }}</p>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        {% endfor %}
+                    <div class="form-check d-flex justify-content-center mb-5">
+
+                    </div>
+                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                        <button type="submit" class="btn btn-outline-dark btn-lg">Send</button>
+                    </div>
+                    </f>
+                </form>
+            </div>
+        </div>
+    </div>
+</form>

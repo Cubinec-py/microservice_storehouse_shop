@@ -18,6 +18,42 @@ $(function () {
     });
   };
 
+  var ContactUsloadForm = function () {
+    var btn = $(this);
+    $.ajax({
+      url: btn.attr("data-url"),
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#contact-modal .modal-content").html("");
+        $("#contact-modal").modal("show");
+      },
+      success: function (data) {
+          $("#contact-modal .modal-content").html(data.html_form);
+        }
+    });
+  };
+
+  var ContactUssaveForm = function () {
+    var form = $(this);
+    $.ajax({
+      url: form.attr("action"),
+      data: form.serialize(),
+      type: form.attr("method"),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          alert("Your message was successfully send to administration, wait for our response on your email.");
+          $("#contact-modal").modal("hide");
+        }
+        else {
+          $("#contact-modal .modal-content").html(data.html_form);
+        }
+      }
+    });
+    return false;
+  };
+
   var saveForm = function () {
     var form = $(this);
     $.ajax({
@@ -81,6 +117,7 @@ $(function () {
 
   /* Binding */
   $(".js-shop").click(loadForm);
+  $(".contact-us").click(ContactUsloadForm);
 
   // Create user
   $("#modal-book").on("submit", ".js-create-user", saveForm);
@@ -91,8 +128,7 @@ $(function () {
   // Change password
   $("#modal-book").on("submit", ".js-change_password-form", change_passwordForm);
 
-  // Delete book
-  $("#book-table").on("click", ".js-delete-book", loadForm);
-  $("#modal-book").on("submit", ".js-book-delete-form", saveForm);
+  // Contact us
+  $("#contact-modal").on("submit", ".js-contact-us", ContactUssaveForm);
 
 });

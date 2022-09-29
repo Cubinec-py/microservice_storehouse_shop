@@ -18,7 +18,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     def get_count_value(self, instance):
         get_book = Book.objects.get(title=instance)
-        data_models = get_book.bookitem_set.count()
+        data_models = get_book.bookitem_set.filter(status='Available').count()
 
         return data_models
 

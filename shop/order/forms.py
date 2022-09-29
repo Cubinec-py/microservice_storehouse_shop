@@ -1,22 +1,14 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from order.models import Customer
+from order.models import Order
 
 
-def validate_name_exists(value):
-    incident = Customer.objects.filter(name=value)
+def validate_order_exists(value):
+    incident = Order.objects.filter(transaction_id=value)
     if not incident:
-        raise ValidationError('No such name in orders')
-
-
-def validate_email_exists(value):
-    incident = Customer.objects.filter(email=value)
-    if not incident:
-        raise ValidationError('No such email in orders')
+        raise ValidationError('No such order in orders')
 
 
 class OrderForm(forms.Form):
-
-    name = forms.CharField(max_length=50, required=True, validators=[validate_name_exists])
-    email = forms.EmailField(max_length=50, required=True, validators=[validate_email_exists])
+    order_number = forms.CharField(max_length=50, required=True, validators=[validate_order_exists])

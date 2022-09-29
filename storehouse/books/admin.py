@@ -1,13 +1,13 @@
 from django.contrib import admin
-from django.contrib.admin import TabularInline, StackedInline
+from django.contrib.admin import StackedInline
 
 from books.models import Genre, Book, BookItem, Author
 
 
 class BookItemInline(StackedInline):
     model = BookItem
-    fields = ('book', 'imprint')
-    extra = 1
+    fields = ('id', 'imprint', 'status', 'book')
+    extra = 5
 
 
 @admin.register(Genre)

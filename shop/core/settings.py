@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
+    "shop",
 ]
 
 
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     'user_authentication',
     'order',
     'books',
+    'contact_us',
 ]
 
 MIDDLEWARE = [
@@ -162,6 +164,14 @@ REDIS_URL = 'redis://redis:6379/0'
 REDIS_CACHE = "redis:6379"
 AMQP_URL = "amqp://rabbitmq:5672"
 
-BROKER_URL = REDIS_URL
+BROKER_URL = AMQP_URL
 CELERY_result_backend = REDIS_URL
 CELERY_BROKER_URL = BROKER_URL
+
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "mailhog"
+EMAIL_PORT = "25"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_SSL = False

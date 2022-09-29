@@ -1,0 +1,25 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+
+{% block content %}
+    <style>
+   body {
+    background-image: url({% static 'images/photo-1514810771018-276192729582.jpeg' %}); /* Адрес картинки */
+    background-size: 103%;
+   }
+   .i-am-centered {
+    margin: auto;
+    max-width: 1000px;
+    padding-top: 10%;
+   }
+  </style>
+    <body>
+    <div class="i-am-centered">
+        <h1>You can buy book even you not registered, but for better service registration is better for you!</h1>
+        <h1>You can see all your orders in "My orders" if you registered and login in.</h1>
+        <h1>If you not registered user, you can also see your orders, but you needed to search them by number of your order.</h1>
+        <h1>If you have some problems, always can contact us by "Contact us".</h1>
+    </div>
+  </body>
+{% endblock %}

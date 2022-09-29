@@ -8,10 +8,6 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('books', '0002_alter_bookitem_options_rename_custom_id_book_id_and_more'),
-    ]
-
     operations = [
         migrations.CreateModel(
             name='Order',

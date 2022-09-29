@@ -29,11 +29,7 @@ class OrderItem(models.Model):
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, to_field='transaction_id', on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
-
-
-class OrderItemBookItem(models.Model):
-    book_item = models.ForeignKey(BookItem, on_delete=models.SET_NULL, null=True, help_text='Taking book from store')
-    order_item = models.ForeignKey(OrderItem, on_delete=models.SET_NULL, null=True)
+    book_item = models.ManyToManyField(BookItem, help_text="Select a book_item for the order")
 
 
 class ShippingAddress(models.Model):

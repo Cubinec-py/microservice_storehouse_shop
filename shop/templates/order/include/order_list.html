@@ -4,15 +4,19 @@
         {% for order in order_list %}
             {% if order.get_cart_items > 0  %}
             <tr>
-                <td>{{ order.id }}</td>
+                <td>{{ order.transaction_id }}</td>
                 <td>{{ order.date_ordered|date:"M d, Y G:i" }}</td>
                 <td>{{ order.get_cart_items }}</td>
                 <td>
+                {% if order.status|length > 0 %}
+                    {{ order.status }}
+                {% else %}
                     {% if order.complete is True %}
                         Order processed, please wait for confirmation
                     {% else %}
                         Your order in bag now
                     {% endif %}
+                {% endif %}
                 </td>
                 <td>${{ order.get_cart_total|floatformat:2 }}</td>
                 <td>
@@ -31,16 +35,20 @@
     {% else %}
         {% for order in order_list %}
             {% if order.get_cart_items > 0  %}
-            <tr>
-                <td>{{ order.id }}</td>
+                <tr>
+                <td>{{ order.transaction_id }}</td>
                 <td>{{ order.get_cart_items }}</td>
                 <td>{{ order.date_ordered|date:"M d, Y G:i" }}</td>
                 <td>
+                {% if order.status %}
+                    {{ order.status }}
+                {% else %}
                     {% if order.complete is True %}
                         Order processed, please wait for confirmation
                     {% else %}
                         Your order in bag now
                     {% endif %}
+                {% endif %}
                 </td>
                 <td>${{ order.get_cart_total|floatformat:2 }}</td>
                 <td>

@@ -1,35 +1,6 @@
 {% load static %}
 
 <h3 class="mb-4 border-bottom pb-1">Filters</h3>
-
-{#        <div class="list-group list-group-flush">#}
-{#            {% if filter.form.data.genre|length == 0 %}#}
-{#                {% for filter in filter.form.fields.genre.queryset.all %}#}
-{#                    <li class="list-group-item">#}
-{#                        <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
-{#                        {{ filter }} no filter#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#            {% else %}#}
-{#                {% for key, value in filter.form.data.lists %}#}
-{#                    {% if key == 'genre' %}#}
-{#                        {% for filter in filter.form.fields.genre.queryset.all %}#}
-{#                            {% if filter.id == value %}#}
-{#                                <li class="list-group-item">#}
-{#                                    <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
-{#                                    {{ filter }} sf#}
-{#                                </li>#}
-{#                            {% else %}#}
-{#                                <li class="list-group-item">#}
-{#                                    <input class="filter-checkbox" name="genre" id="id_genre" value="{{ filter.id }}" type="checkbox">#}
-{#                                    {{ filter }}#}
-{#                                </li>#}
-{#                            {% endif %}#}
-{#                        {% endfor %}#}
-{#                    {% endif %}#}
-{#                {% endfor %}#}
-{#            {% endif %}#}
-{#        </div>#}
 <form method="GET" action="">
 
     <div class="card mb-4">
@@ -59,12 +30,12 @@
     <div class="card mb-4">
         <h6 class="card-header">Authors</h6>
         <div class="list-group list-group-flush">
-            {% for filter in filter.form.fields.author.queryset.all %}
-                <li class="list-group-item">
-                    <input class="filter-checkbox" name="author" id="id_author" value="{{ filter.id }}" type="checkbox">
-                    {{ filter }}
-                </li>
-            {% endfor %}
+            <select class="form-select" name="author" id="id_author" aria-label="Default select example">
+                <option value="">---------------------------</option>
+                {% for filter in filter.form.fields.author.queryset.all %}
+                    <option value="{{ filter.id }}">{{ filter }}</option>
+                {% endfor %}
+            </select>
         </div>
     </div>
     <button class="btn btn-outline-dark" style="margin-bottom: 2px !important;">Filter</button>

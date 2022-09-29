@@ -10,6 +10,7 @@ services:
       - ./shop:/app
     networks:
       - shop_network
+      - nginx_network
     ports:
       - "8000:8000"
     depends_on:
@@ -36,8 +37,11 @@ services:
       - ./storehouse:/app
     networks:
       - storehouse_network
+      - nginx_network
     ports:
       - "8001:8000"
+    expose:
+      - 8000
     depends_on:
       - db_storehouse
     environment:
@@ -125,15 +129,22 @@ services:
     container_name: celery
     restart: on-failure
     depends_on:
-      - rabbitmq
       - redis
+      - db_shop
+      - db_storehouse
     expose: []
-    ports:
-      - "5555:5555"
+    ports: []
     networks:
       - shop_network
+      - db_shop
+      - db_storehouse
       - storehouse_network
     environment:
+      DB_NAME: "shop"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_HOST: "db_shop"
+      DB_PORT: "5432"
       C_FORCE_ROOT: 'true'
       CHECK_WEB: 'true'
     healthcheck:
@@ -143,9 +154,67 @@ services:
       retries: 2
     command: celery -A core worker -B -l INFO
 
+  flower:
+    image: mher/flower:0.9.5
+    container_name: flower
+    networks:
+      - shop_network
+      - nginx_network
+    expose:
+      - 5555
+    depends_on:
+      - celery
+      - redis
+      - db_shop
+    command: [ "--app core", "--port=5555", "--url_prefix=flower", "--broker=amqp://rabbitmq:5672", "--broker_api=amqp://rabbitmq:15672//" ]
+
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog:latest
+    command: [ "-smtp-bind-addr", "0.0.0.0:25" ]
+    user: root
+    restart: on-failure
+    networks:
+      - shop_network
+      - nginx_network
+    expose:
+      - 25
+      - 8025
+    healthcheck:
+      test: [ "CMD", "echo", "|", "telnet", "127.0.0.1 25" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    restart: on-failure
+    networks:
+      - nginx_network
+    ports:
+      - 80:80
+      - 81:81
+      - 8025:8025
+      - 5555:5555
+    depends_on:
+      - mailhog
+      - flower
+      - shop
+      - storehouse
+    healthcheck:
+      test: [ "CMD-SHELL", "ps ax", "|" ,"grep -v grep", "|" ,"grep nginx",  "||", "exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
+    volumes:
+      - pgadmin:/var/lib/pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -160,11 +229,13 @@ services:
 networks:
   shop_network:
   storehouse_network:
-  db_storehouse:
   db_shop:
+  db_storehouse:
+  nginx_network:
 
 volumes:
   db_shop:
   db_storehouse:
   rabbitmq_data:
   redis:
+  pgadmin:
