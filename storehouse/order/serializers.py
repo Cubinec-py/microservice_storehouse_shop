@@ -14,7 +14,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['customer_email', 'transaction_id', 'date_ordered']
+        fields = ['id', 'customer_email', 'transaction_id', 'date_ordered', 'status']
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):

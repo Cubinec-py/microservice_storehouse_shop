@@ -52,7 +52,6 @@ class Book(models.Model):
     digital = models.BooleanField(blank=True, default=False, null=True)
     pages = models.IntegerField()
     created = models.DateField(default=timezone.now, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
     count = models.IntegerField(default=0)
     available = models.BooleanField(default=True)
     storehouse_book_id = models.CharField(max_length=50, null=True, help_text='Book id from storehouse')
@@ -74,11 +73,3 @@ class Book(models.Model):
         Returns the url to access a particular book instance.
         """
         return reverse('book-detail', args=[str(self.id)])
-
-    @property
-    def imageURL(self):
-        try:
-            url = self.image.url
-        except:
-            url = ''
-        return url

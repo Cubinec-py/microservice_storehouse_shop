@@ -4,9 +4,8 @@
 
     <h1 class="page-header">Your orders</h1>
     {% if user.is_anonymous %}
-        <form action="{% url 'order_info'  %}" method="post">
-            {% csrf_token %}
-            <h6><strong>Write your name and email which you wrote in shipping address to see your order.</strong></h6>
+        <form action="{% url 'order_info'  %}" method="get">
+            <h6><strong>Write your order numer witch you received in email to see your order.</strong></h6>
             {{ form }}
             <input type="submit" name="submit" value="OK">
         </form>

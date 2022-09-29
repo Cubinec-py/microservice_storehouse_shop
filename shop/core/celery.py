@@ -14,7 +14,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'check_for_books': {
         'task': 'books.tasks.check_for_books',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/2'),
     },
     'update_count_books': {
         'task': 'books.tasks.update_count_books',

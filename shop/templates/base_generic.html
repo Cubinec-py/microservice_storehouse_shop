@@ -138,12 +138,6 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top container-fluid p-3 text-bg-dark">
         <img class="bi me-2" src="{% static 'images/Tesla-Logo-3.webp' %}" alt="" width="72" height="57">
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-{#            <li>#}
-{#                <a class="btn btn-dark" href="{% url 'home' %}">#}
-{#                    <span class="glyphicon glyphicon-plus"></span>#}
-{#                    Home#}
-{#                </a>#}
-{#            </li>#}
             <li>
               <a class="btn btn-dark" href="{% url 'store' %}">
               <span class="glyphicon glyphicon-plus"></span>
@@ -151,13 +145,13 @@
               </a>
             </li>
             <li>
-              <a class="btn btn-dark" href="{% url 'store' %}">
+              <a class="btn btn-dark" href="{% url 'faq' %}">
               <span class="glyphicon glyphicon-plus"></span>
               Faq
               </a>
             </li>
             <li>
-              <a class="btn btn-dark" href="{% url 'store' %}">
+              <a class="btn btn-dark" href="{% url 'about' %}">
               <span class="glyphicon glyphicon-plus"></span>
               About
               </a>
@@ -169,7 +163,7 @@
                 </a>
             </li>
             <li>
-                <button type="button" class="btn btn-dark js-blog" data-url="{% url 'store' %}">
+                <button type="button" class="btn btn-dark contact-us" data-url="{% url 'contact_us' %}">
                     <span class="glyphicon glyphicon-plus"></span>
                     Contact us
                 </button>

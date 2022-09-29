@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -75,11 +73,14 @@ class BookItem(models.Model):
         default='Available'
     )
 
+    class Meta:
+        ordering = ['status']
+
     def __str__(self):
         """
         String for representing the Model object
         """
-        return self.book.title
+        return '%s, Status: %s' % (self.book.title, self.status)
 
 
 class Author(models.Model):

@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
 import json
 import datetime
@@ -8,7 +7,7 @@ import datetime
 from order.utils import cart_data, guest_order
 from order.forms import OrderForm
 from order.models import Book, Order, OrderItem, ShippingAddress, Customer
-from order.tasks import order_to_storehouse
+from order.tasks import order_to_storehouse, check_order_status, confirm_order_email
 
 
 def cart(request):
@@ -42,7 +41,10 @@ def update_item(request):
 	order_item, created = OrderItem.objects.get_or_create(order=order, book=product)
 
 	if action == 'add':
-		order_item.quantity = (order_item.quantity + 1)
+		if order_item.quantity < product.count:
+			order_item.quantity = (order_item.quantity + 1)
+		else:
+			order_item.quantity = order_item.quantity
 	elif action == 'remove':
 		order_item.quantity = (order_item.quantity - 1)
 	elif action == 'delete':
@@ -83,7 +85,10 @@ def process_order(request):
 				state=data['shipping']['state'],
 				zipcode=data['shipping']['zipcode'],
 			)
-			# order_to_storehouse(customer, transaction_id)
+			customer_email = request.user.email
+			customer_name = request.user.username
+			order_to_storehouse.delay(customer_email, transaction_id)
+			confirm_order_email(customer_email, transaction_id, customer_name)
 		else:
 			ShippingAddress.objects.create(
 				guest=customer,
@@ -93,7 +98,10 @@ def process_order(request):
 				state=data['shipping']['state'],
 				zipcode=data['shipping']['zipcode'],
 			)
-			# order_to_storehouse(customer, transaction_id)
+			customer_email = customer.email
+			customer_name = customer.name
+			order_to_storehouse.delay(customer_email, transaction_id)
+			confirm_order_email(customer_email, transaction_id, customer_name)
 
 	return JsonResponse('', safe=False)
 
@@ -102,20 +110,24 @@ def order_view(request):
 
 	if request.user.is_authenticated:
 		order = Order.objects.filter(customer=request.user)
+		for item in order:
+			order_id = item.id
+			check_order_status.delay(order_id)
 		context = {
 			'order_list': order
 		}
 		return render(request, 'order/order_list.html', context)
 
 	else:
-		if 'submit' in request.POST:
-			form = OrderForm(request.POST)
+		if 'submit' in request.GET:
+			form = OrderForm(request.GET)
 			if form.is_valid():
-				name = form.cleaned_data["name"]
-				email = form.cleaned_data["email"]
-				if Customer.objects.filter(name=name, email=email) is not None:
-					guest = get_object_or_404(Customer, name=name, email=email)
-					order = Order.objects.filter(guest=guest.id)
+				transaction_id = form.cleaned_data["order_number"]
+				if Order.objects.filter(transaction_id=transaction_id) is not None:
+					order = Order.objects.filter(transaction_id=transaction_id)
+					for item in order:
+						order_id = item.id
+						check_order_status.delay(order_id)
 					guest_context = {'form': form, 'order_list': order}
 					return render(request, 'order/order_list.html', guest_context)
 		else:

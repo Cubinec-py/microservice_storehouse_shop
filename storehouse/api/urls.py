@@ -13,7 +13,7 @@ from drf_yasg.views import get_schema_view
 
 router = DefaultRouter()
 router.register(r'book', BookViewSet, basename="book")
-router.register(r'book_instance', BookItemViewSet, basename="bookinstance")
+router.register(r'book_item', BookItemViewSet, basename="bookitem")
 router.register(r'author', AuthorViewSet, basename="author")
 router.register(r'genre', GenreViewSet, basename="genre")
 router.register(r'order_item', OrderItemViewSet, basename="orderitem")
@@ -29,7 +29,7 @@ schema_view = get_schema_view(
     ),
     url=settings.SWAGGER_SETTINGS["DEFAULT_API_URL"],
     public=True,
-    permission_classes=[permissions.AllowAny],
+    permission_classes=[permissions.IsAuthenticated],
 )
 
 swagger_patterns = [
@@ -39,6 +39,7 @@ swagger_patterns = [
 
 urlpatterns = [
     path('', include(router.urls)),
+
     path('auth/', include('dj_rest_auth.urls')),
     path('registration/', include('dj_rest_auth.registration.urls')),
     path('auth/auth-token', views.obtain_auth_token),

@@ -17,12 +17,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+
+from contact_us.views import contact_us
 
 urlpatterns = [
     path('', include('books.urls')),
+    path('about/', TemplateView.as_view(template_name='about_faq/about.html'), name='about'),
+    path('faq/', TemplateView.as_view(template_name='about_faq/faq.html'), name='faq'),
+    path('contact_us/', contact_us, name='contact_us'),
     path('order/', include('order.urls')),
     path('profile/', include('user_authentication.urls')),
     path('admin/', admin.site.urls),
+    path('__debug__/', include('debug_toolbar.urls'))
 ]
 
 if settings.DEBUG:
