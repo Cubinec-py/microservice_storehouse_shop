@@ -15,6 +15,8 @@ services:
       - "8000:8000"
     depends_on:
       - db_shop
+    env_file:
+      - shop/core/.env
     environment:
       DB_NAME: "shop"
       DB_USER: "postgres"
@@ -44,6 +46,8 @@ services:
       - 8000
     depends_on:
       - db_storehouse
+    env_file:
+      - storehouse/core/.env
     environment:
       DB_NAME: "storehouse"
       DB_USER: "postgres"
