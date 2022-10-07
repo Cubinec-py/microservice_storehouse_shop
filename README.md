@@ -10,6 +10,7 @@
 - If user anonymous, need to input name, email and delivery address, if user logged in, enough to enter the delivery address;
 - Order and its status can be checked in "My orders" tab, if user anonymous, need to enter the order number which was sent to the user email specified in the order, if the user is logged in, the order list of this account will be immediately visible;
 ![alt text](https://github.com/Cubinec-py/microservice_storehouse_shop/blob/main/shop/shop_model_visualized.png?raw=true)
+![alt text](https://github.com/Cubinec-py/microservice_storehouse_shop/blob/main/shop/shop_view.png?raw=true)
 
 ## STORAGE on Django REST framework
 - Adding a description of the book and book items (summed up and transferred to the store as an available quantity) with the place where they are located in storehouse through the admin panel;
